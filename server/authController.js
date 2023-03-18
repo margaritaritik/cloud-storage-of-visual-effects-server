@@ -118,10 +118,57 @@ class authController {
         }
     }
 
+    async getEffects(req, res) {
+        try {
+            let effects=[];
+            if(req.user){
+
+                db.query('SELECT * FROM effect;',function (err, results, fields){
+                    if (results.length > 0) {
+                        for(let i=0;i<results.length;i++){
+
+                            effects[i]={id:results[i].id,name:results[i].name,
+                                description:results[i].description,html:results[i].html,js:results[i].js,
+                                typeeffect_id:results[i].typeeffect_id,css:results[i].css};
+                        }
+                        console.log(effects)
+                    } else {
+                        console.log("Данные не верны!");
+                        res.status(401).json({message: 'Incorrect Username and/or Password!'});
+                    }
+                    res.status(200).json(effects);
+                    res.end();
+                });
+
+
+            }else{
+                res.status(401).json({user:'nothing'});
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+
     async repository(req, res) {
         try {
             if(req.user){
                 console.log(req.body);
+                res.status(200).json({user:req.user});
+            }else{
+                res.status(401).json({user:'nothing'});
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    async createRepository(req, res) {
+        try {
+            if(req.user){
+                db.query('insert into `effect` (name,description,html,css,js,typeeffect_id) values(?,?,?,?,?,?);',[req.name,req.description,req.html,req.css,req.js,req.typeeffect_id], function (err, results, fields) {
+                    console.log("Сохранено!");
+                });
                 res.status(200).json({user:req.user});
             }else{
                 res.status(401).json({user:'nothing'});
