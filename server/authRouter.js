@@ -14,6 +14,7 @@ router.post('/upload',upload.single('image'),authMiddleware,controller.upload);
 router.post('/upload-image',authMiddleware,controller.uploadPhoto);
 router.get('/users',authMiddleware, controller.getUsers);
 router.post('/repository',authMiddleware, controller.repository);
+// router.post('/',authMiddleware, controller.repository);
 
 module.exports=router;
 
