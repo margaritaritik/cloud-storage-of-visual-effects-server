@@ -44,14 +44,14 @@ class authController {
                     return res.json({message:'Пользователь уже есть с таким логином!'});
                 } else {
                     const hashPassword = bcrypt.hashSync(password, 7);
-                    db.query('insert into user (name,password,typeuser_id) values(?,?,1)', [username, hashPassword], function (err, results, fields) {
+                    db.query('insert into user (name,password,typeuser_id) values(?,?,2)', [username, hashPassword], function (err, results, fields) {
                         if (err) console.log(err);
                         else {
                             console.log("Данные добавлены");
                             db.query('SELECT * FROM user ORDER BY id DESC LIMIT 1;', function (err, results, fields) {
                                 if (results.length > 0) {
                                     console.log(results[0].id);
-                                    db.query('insert into `account` (description,user_id,srcImg) values(\'Это не баг, это фича\',?,"http://127.0.0.1:9003/image/avatar.svg");',[results[0].id], function (err, results, fields) {
+                                    db.query('insert into `account` (description,user_id,srcImg) values(\'Это не баг, это фича\',?,"http://127.0.0.1:9003/image/ImagesForClient/avatar.svg");',[results[0].id], function (err, results, fields) {
                                         console.log("Пользователь создан!");
                                     });
                                 } else {
@@ -123,14 +123,12 @@ class authController {
             let effects=[];
             if(req.user){
 
-                db.query('SELECT * FROM effect;',function (err, results, fields){
+                db.query('SELECT effect.id,effect.name,effect.description,effect.typeeffect_id,effect.css,effect.js,effect.html,effect.account_id,account.srcImg FROM effect, account where account.id=effect.account_id',function (err, results, fields){
                     if (results.length > 0) {
                         for(let i=0;i<results.length;i++){
 
-                            effects[i]={id:results[i].id,name:results[i].name,
-                                description:results[i].description,html:results[i].html,js:results[i].js,
-                                typeeffect_id:results[i].typeeffect_id,css:results[i].css};
-                        }
+                            effects[i]={id:results[i].id,name:results[i].name,description:results[i].description,typeeffect_id:results[i].typeeffect_id,
+                                css:results[i].css,js:results[i].js,html:results[i].html,account_id:results[i].account_id,srcImg:results[i].srcImg};                        }
                         console.log(effects)
                     } else {
                         console.log("Данные не верны!");
@@ -249,7 +247,7 @@ class authController {
                         console.log(err);
                     } else {
                         const src=`http://127.0.0.1:9003/image/${imageName}`
-                        const q=`UPDATE account set  srcImg="${src}" where user_id=?`;
+                        const q=`UPDATE account set  srcImg="${src}" where id=?`;
                         db.query(q,[req.user.id],(err,rows,fields)=>{
                             if(err) throw err;
                         })
