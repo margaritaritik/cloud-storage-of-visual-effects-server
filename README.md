@@ -1,3 +1,4 @@
 
-![ER-диаграмма базы данных (с «вороньими лапками»)](https://user-images.githubusercontent.com/96609495/226077176-ee84771b-bf29-4a24-95c3-5da246b6714a.jpeg)
 
+
+![ER-РґРёР°РіСЂР°РјРјР° Р±Р°Р·С‹ РґР°РЅРЅС‹С… (СЃ В«РІРѕСЂРѕРЅСЊРёРјРё Р»Р°РїРєР°РјРёВ»)](https://user-images.githubusercontent.com/96609495/233794064-f3dbea0a-d41f-4755-a74f-3b7749a367fb.jpeg)
