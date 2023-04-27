@@ -109,6 +109,7 @@ class authController {
     async getUsers(req, res) {
         try {
             if(req.user){
+                console.log(req.user);
                 res.status(200).json({user:req.user});
             }else{
                 res.status(401).json({user:'nothing'});
@@ -175,6 +176,51 @@ class authController {
             console.log(e);
         }
     }
+
+    async createCommentForEffect(req, res) {
+        try {
+            if(req.user){
+                db.query('insert into `effect` (name,description,html,css,js,typeeffect_id) values(?,?,?,?,?,?);',[req.name,req.description,req.html,req.css,req.js,req.typeeffect_id], function (err, results, fields) {
+                    console.log("Сохранено!");
+                });
+                res.status(200).json({user:req.user});
+            }else{
+                res.status(401).json({user:'nothing'});
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    async getCommentsForEffect(req, res) {
+        try {
+            let comments=[];
+            if(req.user){
+
+                db.query('select comment.comment_name,account.id,account.srcImg from comment,account where comment.account_id=account.id and comment.effect_id=?;',[6],function (err, results, fields){
+                    if (results.length > 0) {
+                        for(let i=0;i<results.length;i++){
+
+                            comments[i]={id:results[i].id,comment_name:results[i].comment_name,account_id:results[i].account_id,effect_id:results[i].account_id};
+                        }
+                        console.log(comments);
+                    } else {
+                        console.log("Данные не верны!");
+                        res.status(401).json({message: 'Incorrect Username and/or Password!'});
+                    }
+                    res.status(200).json(comments);
+                    res.end();
+                });
+
+
+            }else{
+                res.status(401).json({user:'nothing'});
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
 
     // async uploadPhoto(req, res) {
     //     try {
