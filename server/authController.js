@@ -179,9 +179,10 @@ class authController {
 
     async createCommentForEffect(req, res) {
         try {
+            console.log(req.user);
             if(req.user){
-                db.query('insert into `effect` (name,description,html,css,js,typeeffect_id) values(?,?,?,?,?,?);',[req.name,req.description,req.html,req.css,req.js,req.typeeffect_id], function (err, results, fields) {
-                    console.log("Сохранено!");
+                db.query('insert into comment(comment_name,account_id,effect_id) values values(?,?,?);',[req.name,req.account_id,req.effect_id], function (err, results, fields) {
+                    console.log("Коммент добавлен!");
                 });
                 res.status(200).json({user:req.user});
             }else{
