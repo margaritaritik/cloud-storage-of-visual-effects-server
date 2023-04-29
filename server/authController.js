@@ -179,15 +179,19 @@ class authController {
 
     async createCommentForEffect(req, res) {
         try {
-            console.log(req.user);
+            console.log(req.body.name);
             if(req.user){
-                db.query('insert into comment(comment_name,account_id,effect_id) values values(?,?,?);',[req.name,req.account_id,req.effect_id], function (err, results, fields) {
-                    console.log("Коммент добавлен!");
+                db.query(`insert into comment(comment_name,account_id,effect_id) values(?,?,?);`,[req.body.name,req.body.account_id,req.body.effect_id], function (err, results, fields) {
+                    if (err) console.log(err);
+                    else {
+                        console.log("Коммент добавлен!");
+                    }
                 });
                 res.status(200).json({user:req.user});
             }else{
                 res.status(401).json({user:'nothing'});
             }
+            res.end();
         } catch (e) {
             console.log(e);
         }
@@ -196,15 +200,16 @@ class authController {
     async getCommentsForEffect(req, res) {
         try {
             let comments=[];
+            const effectId=req.params["effect_id"]
             if(req.user){
 
-                db.query('select comment.comment_name,account.id,account.srcImg from comment,account where comment.account_id=account.id and comment.effect_id=?;',[6],function (err, results, fields){
+                db.query('select comment.comment_name,account.id,account.srcImg from comment,account where comment.account_id=account.id and comment.effect_id=?;',[effectId],function (err, results, fields){
                     if (results.length > 0) {
                         for(let i=0;i<results.length;i++){
 
-                            comments[i]={id:results[i].id,comment_name:results[i].comment_name,account_id:results[i].account_id,effect_id:results[i].account_id};
+                            comments[i]={id:results[i].id,comment_name:results[i].comment_name,srcImg:results[i].srcImg};
                         }
-                        console.log(comments);
+                        // console.log(comments);
                     } else {
                         console.log("Данные не верны!");
                         res.status(401).json({message: 'Incorrect Username and/or Password!'});
