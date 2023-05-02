@@ -165,13 +165,15 @@ class authController {
     async createRepository(req, res) {
         try {
             if(req.user){
-                db.query('insert into `effect` (name,description,html,css,js,typeeffect_id) values(?,?,?,?,?,?);',[req.name,req.description,req.html,req.css,req.js,req.typeeffect_id], function (err, results, fields) {
+                db.query('insert into `effect` (name,description,html,css,js,typeeffect_id,account_id) values(?,?,?,?,?,?,?);',[req.body.name,req.body.description,req.body.html,req.body.css,req.body.js,req.body.typeeffect_id,req.body.account_id], function (err, results, fields) {
                     console.log("Сохранено!");
                 });
                 res.status(200).json({user:req.user});
+                res.end();
             }else{
                 res.status(401).json({user:'nothing'});
             }
+
         } catch (e) {
             console.log(e);
         }
@@ -215,6 +217,31 @@ class authController {
                         res.status(401).json({message: 'Incorrect Username and/or Password!'});
                     }
                     res.status(200).json(comments);
+                    res.end();
+                });
+
+
+            }else{
+                res.status(401).json({user:'nothing'});
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    async getAccount(req, res) {
+        try {
+            const effectId=req.params["account_id"];
+
+            if(req.user){
+
+                db.query('SELECT account.id,user.name,account.description,account.srcImg FROM user, account WHERE account.id=? and user.id=account.user_id group by account.id,user.name,account.description,account.srcImg;',[effectId],function (err, results, fields){
+                    if (results.length > 0) {
+                        res.status(200).json(results[0]);
+                    } else {
+                        console.log("Данные не верны!");
+                        res.status(401).json({message: 'Incorrect Username and/or Password!'});
+                    }
                     res.end();
                 });
 
