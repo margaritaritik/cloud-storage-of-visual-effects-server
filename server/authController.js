@@ -184,16 +184,14 @@ class authController {
             console.log(req.body.name);
             if(req.user){
                 db.query(`insert into comment(comment_name,account_id,effect_id) values(?,?,?);`,[req.body.name,req.body.account_id,req.body.effect_id], function (err, results, fields) {
-                    if (err) console.log(err);
-                    else {
-                        console.log("Коммент добавлен!");
-                    }
+                     console.log("Коммент добавлен!");
                 });
-                res.status(200).json({user:req.user});
+                return res.status(200).json({user:req.user});
+                res.end();
             }else{
-                res.status(401).json({user:'nothing'});
+                return res.status(401).json({user:'nothing'});
             }
-            res.end();
+
         } catch (e) {
             console.log(e);
         }
@@ -215,6 +213,7 @@ class authController {
                     } else {
                         console.log("Данные не верны!");
                         res.status(401).json({message: 'Incorrect Username and/or Password!'});
+                        return res.end();
                     }
                     res.status(200).json(comments);
                     res.end();
