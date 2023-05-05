@@ -184,7 +184,7 @@ class authController {
             console.log(req.body.name);
             if(req.user){
                 db.query(`insert into comment(comment_name,account_id,effect_id) values(?,?,?);`,[req.body.name,req.body.account_id,req.body.effect_id], function (err, results, fields) {
-                     console.log("Коммент добавлен!");
+                     console.log("Коммент создан!");
                 });
                 return res.status(200).json({user:req.user});
                 res.end();
