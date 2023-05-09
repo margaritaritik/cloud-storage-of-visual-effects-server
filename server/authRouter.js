@@ -14,6 +14,7 @@ router.post('/upload',upload.single('image'),authMiddleware,controller.upload);
 router.post('/upload-image',authMiddleware,controller.uploadPhoto);
 router.get('/users',authMiddleware, controller.getUsers);
 router.post('/createRepository',authMiddleware, controller.createRepository);
+router.post('/changeRepository',authMiddleware, controller.changeRepository);
 router.post('/createComment',authMiddleware, controller.createCommentForEffect);
 router.get('/getComments/:effect_id',authMiddleware, controller.getCommentsForEffect);
 router.get('/getAccount/:account_id',authMiddleware, controller.getAccount);

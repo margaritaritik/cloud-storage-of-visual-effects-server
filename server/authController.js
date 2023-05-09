@@ -4,13 +4,9 @@ const jwt = require('jsonwebtoken');
 const {secret} = require("./config");
 const db=require("./ConnectionDB/db");
 const fs = require('fs');
-
-
 const COOKIE_NAME = "token";
-
 const multer = require('multer')
 const path = require("path");
-
 
 const generateAccessToken = (id, name) => {
     const payload = {
@@ -179,6 +175,23 @@ class authController {
         }
     }
 
+    async changeRepository(req, res) {
+        try {
+            if(req.user){
+                db.query('UPDATE effect SET name=?,description=? , html=?, css=?,js=? ,typeeffect_id=? where id=?;',[req.body.name,req.body.description,req.body.html,req.body.css,req.body.js,req.body.typeeffect_id,req.body.id], function (err, results, fields) {
+                    console.log("Изменено!");
+                });
+                res.status(200).json({user:req.user});
+                res.end();
+            }else{
+                res.status(401).json({user:'nothing'});
+            }
+
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     async createCommentForEffect(req, res) {
         try {
             console.log(req.body.name);
@@ -207,12 +220,12 @@ class authController {
                     if (results.length > 0) {
                         for(let i=0;i<results.length;i++){
 
-                            comments[i]={id:results[i].id,comment_name:results[i].comment_name,srcImg:results[i].srcImg};
+                            comments[i]={account_id:results[i].id,comment_name:results[i].comment_name,srcImg:results[i].srcImg};
                         }
                         // console.log(comments);
                     } else {
                         console.log("Данные не верны!");
-                        res.status(401).json({message: 'Incorrect Username and/or Password!'});
+                        res.status(401).json({message: 'I!'});
                         return res.end();
                     }
                     res.status(200).json(comments);
@@ -253,62 +266,20 @@ class authController {
         }
     }
 
-
-    // async uploadPhoto(req, res) {
-    //     try {
-    //         const blobData=req.body;
-    //         const outputfile = "output.jpeg";
-    //         console.log(req.body);
-    //         db.query('insert into `account` (description,idUser,img) values("test",22,?);', [blobData], function(err, result) {
-    //             console.log("BLOB data inserted!");
-    //             res.status(200).json({message: 'Blob data inserted'});
-    //             db.query('select img from account,user where user.id=22;', function (err,result) {
-    //                 fs.writeFile('/uploadImages/1.jpeg', result[0], (err) => {
-    //                     if (err) {
-    //                         console.error(err)
-    //                         return
-    //                     }
-    //                 })
-    //             })
-    //         });
-    //
-    //     } catch (e) {
-    //         console.log(e);
-    //     }
-    // }
-
     async upload(req, res) {
         try {
             console.log(req.file)
             if(req.user){
-
-                 const image=req.file.buffer.toString('base64');
-               //  res.send(req.file);
+                const image=req.file.buffer.toString('base64');
                 const q=`UPDATE account set  srcImg="${image}" where user_id=?`;
-                // fs.rename(`./images/${req.file.filename}`,`./images/${newName}`,function () {
-                //     console.log('image ok');
-                //     res.send("200");
-                // })
                 db.query(q,[req.user.id],(err,rows,fields)=>{
                     if(err) throw err;
-
-                    // const newName=req.file.filename+'.jpeg';
-
-                    // fs.writeFile('/uploadImages/1.jpeg', result[0], (err) => {
-                    //     if (err) {
-                    //         console.error(err)
-                    //         return
-                    //     }
-                    // })
                 })
                 console.log(`upload ${req.user.id}`);
-               res.status(200).json({user:req.user});
+                res.status(200).json({user:req.user});
             }else{
                 res.status(401).json({user:'nothing'});
             }
-
-
-            console.log()
         } catch (e) {
             console.log(e);
         }
