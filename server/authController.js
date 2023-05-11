@@ -46,7 +46,7 @@ class authController {
                             console.log("Данные добавлены");
                             db.query('SELECT * FROM user ORDER BY id DESC LIMIT 1;', function (err, results, fields) {
                                 if (results.length > 0) {
-                                    console.log(results[0].id);
+                                    // console.log(results[0].id);
                                     db.query('insert into `account` (description,user_id,srcImg) values(\'Это не баг, это фича\',?,"http://127.0.0.1:9003/image/ImagesForClient/avatar.svg");',[results[0].id], function (err, results, fields) {
                                         console.log("Пользователь создан!");
                                     });
@@ -70,7 +70,7 @@ class authController {
         try {
             let username = req.body.login;
             let password = req.body.password;
-            console.log(req.body)
+            // console.log(req.body)
             if (!username || !password) {
                 res.status(400).json({message: 'Please enter Username and Password!'});
                 return res.end();
@@ -105,7 +105,7 @@ class authController {
     async getUsers(req, res) {
         try {
             if(req.user){
-                console.log(req.user);
+                // console.log(req.user);
                 res.status(200).json({user:req.user});
             }else{
                 res.status(401).json({user:'nothing'});
@@ -126,7 +126,7 @@ class authController {
 
                             effects[i]={id:results[i].id,name:results[i].name,description:results[i].description,typeeffect_id:results[i].typeeffect_id,
                                 css:results[i].css,js:results[i].js,html:results[i].html,account_id:results[i].account_id,srcImg:results[i].srcImg};                        }
-                        console.log(effects)
+                        // console.log(effects)
                     } else {
                         console.log("Данные не верны!");
                         res.status(401).json({message: 'Incorrect Username and/or Password!'});
@@ -148,7 +148,7 @@ class authController {
     async repository(req, res) {
         try {
             if(req.user){
-                console.log(req.body);
+                // console.log(req.body);
                 res.status(200).json({user:req.user});
             }else{
                 res.status(401).json({user:'nothing'});
@@ -177,8 +177,9 @@ class authController {
 
     async changeRepository(req, res) {
         try {
+            // console.log(`UPDATE effect SET name="${req.body.name}",description="${req.body.description}" , html="${req.body.html}", css="${req.body.css}",js="${req.body.js}" ,typeeffect_id=${req.body.typeeffect_id} where id=${req.body.id};`);
             if(req.user){
-                db.query('UPDATE effect SET name=?,description=? , html=?, css=?,js=? ,typeeffect_id=? where id=?;',[req.body.name,req.body.description,req.body.html,req.body.css,req.body.js,req.body.typeeffect_id,req.body.id], function (err, results, fields) {
+                db.query(`UPDATE effect SET name="${req.body.name}",description="${req.body.description}" , html="${req.body.html}", css="${req.body.css}",js="${req.body.js}" ,typeeffect_id=${req.body.typeeffect_id} where id=${req.body.id};`, function (err, results, fields) {
                     console.log("Изменено!");
                 });
                 res.status(200).json({user:req.user});
@@ -194,11 +195,34 @@ class authController {
 
     async createCommentForEffect(req, res) {
         try {
-            console.log(req.body.name);
+            // console.log(req.body.name);
             if(req.user){
                 db.query(`insert into comment(comment_name,account_id,effect_id) values(?,?,?);`,[req.body.name,req.body.account_id,req.body.effect_id], function (err, results, fields) {
                      console.log("Коммент создан!");
                 });
+                return res.status(200).json({user:req.user});
+                res.end();
+            }else{
+                return res.status(401).json({user:'nothing'});
+            }
+
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    async deleteRepository(req, res) {
+        try {
+        //    console.log(req.body.name);
+            const effectId=req.params["id"]
+            console.log(effectId);
+            if(req.user){
+                db.query(`delete from comment where effect_id=?;`,[effectId], function (err, results, fields) {
+                    db.query(`DELETE FROM effect WHERE id=?;`,[effectId], function (err, results, fields) {
+                        console.log("Эффект удалн!");
+                    });
+                });
+
                 return res.status(200).json({user:req.user});
                 res.end();
             }else{

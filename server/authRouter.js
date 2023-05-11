@@ -15,11 +15,14 @@ router.post('/upload-image',authMiddleware,controller.uploadPhoto);
 router.get('/users',authMiddleware, controller.getUsers);
 router.post('/createRepository',authMiddleware, controller.createRepository);
 router.post('/changeRepository',authMiddleware, controller.changeRepository);
+router.delete('/deleteRepository/:id',authMiddleware, controller.deleteRepository);
 router.post('/createComment',authMiddleware, controller.createCommentForEffect);
 router.get('/getComments/:effect_id',authMiddleware, controller.getCommentsForEffect);
 router.get('/getAccount/:account_id',authMiddleware, controller.getAccount);
 router.post('/repository',authMiddleware, controller.repository);
 router.get('/effects',authMiddleware, controller.getEffects);
+router.delete('/effects',authMiddleware, controller.getEffects);
+
 
 
 module.exports=router;
