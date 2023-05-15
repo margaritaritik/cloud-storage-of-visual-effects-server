@@ -177,9 +177,10 @@ class authController {
 
     async changeRepository(req, res) {
         try {
-            // console.log(`UPDATE effect SET name="${req.body.name}",description="${req.body.description}" , html="${req.body.html}", css="${req.body.css}",js="${req.body.js}" ,typeeffect_id=${req.body.typeeffect_id} where id=${req.body.id};`);
+            // console.log((req.body.html).replace(`"`,`'`));
+             console.log(`UPDATE effect SET name="${req.body.name}",description="${req.body.description}" , html="${(req.body.html).replace(`"`,`'`)}", css="${req.body.css}",js="${req.body.js}" ,typeeffect_id=${req.body.typeeffect_id} where id=${req.body.id};`);
             if(req.user){
-                db.query(`UPDATE effect SET name="${req.body.name}",description="${req.body.description}" , html="${req.body.html}", css="${req.body.css}",js="${req.body.js}" ,typeeffect_id=${req.body.typeeffect_id} where id=${req.body.id};`, function (err, results, fields) {
+                db.query(`UPDATE effect SET name="${req.body.name}",description="${req.body.description}" , html="${(req.body.html).replace(`"`,`'`)}", css="${(req.body.css).replace(`"`,`'`)}",js="${req.body.js}" ,typeeffect_id=${req.body.typeeffect_id} where id=${req.body.id};`, function (err, results, fields) {
                     console.log("Изменено!");
                 });
                 res.status(200).json({user:req.user});
