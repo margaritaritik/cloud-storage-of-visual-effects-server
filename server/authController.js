@@ -193,9 +193,26 @@ class authController {
         }
     }
 
+    async changeUser(req, res) {
+        try {
+            // console.log(`UPDATE effect SET name="${req.body.name}",description="${req.body.description}" , html="${req.body.html}", css="${req.body.css}",js="${req.body.js}" ,typeeffect_id=${req.body.typeeffect_id} where id=${req.body.id};`);
+            if(req.user){
+                db.query(`UPDATE effect SET name="${req.body.name}",description="${req.body.description}" , html="${req.body.html}", css="${req.body.css}",js="${req.body.js}" ,typeeffect_id=${req.body.typeeffect_id} where id=${req.body.id};`, function (err, results, fields) {
+                    console.log("Изменено!");
+                });
+                res.status(200).json({user:req.user});
+                res.end();
+            }else{
+                res.status(401).json({user:'nothing'});
+            }
+
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     async createCommentForEffect(req, res) {
         try {
-            // console.log(req.body.name);
             if(req.user){
                 db.query(`insert into comment(comment_name,account_id,effect_id) values(?,?,?);`,[req.body.name,req.body.account_id,req.body.effect_id], function (err, results, fields) {
                      console.log("Коммент создан!");
