@@ -6,6 +6,8 @@ const connection = mysql.createConnection({
     database: "db_cloud_storage_of_visual_effects",
     password: "Rita2003/",
     dialect: "mysql",
+    connectionLimit: 15,
+    queueLimit: 30,
     pool: {
         max: 5,
         min: 0,

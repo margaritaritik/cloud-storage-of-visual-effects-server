@@ -283,6 +283,45 @@ class authController {
         }
     }
 
+    async likeRep(req, res) {
+        try {
+            if(req.user){
+                db.query('select * from like_rep where id_account=? and id_rep=?;',[req.body.id_account,req.body.id_rep],function (err, results, fields) {
+                    if (results.length < 0) {
+                        db.query('insert into like_rep(id_account,id_rep) values(?,?);', [req.body.id_account, req.body.id_rep], function (err, results, fields) {
+                            console.log("Сохранено!");
+                        });
+                    }
+                res.status(200).json({user:req.user});
+                res.end();
+                })
+            }else{
+                res.status(401).json({user:'nothing'});
+            }
+
+        } catch (e) {
+            console.log(e);
+        }
+    }
+    async getLikeRep(req, res) {
+        let like=[];
+        try {
+            if(req.user){
+                db.query('select * from like_rep where id_account=?;',[req.body.id_account],function (err, results, fields) {
+                    for (let i = 0; i < results.length; i++) {
+                        like[i]=results[i].id_rep;
+
+                    }
+                    res.status(200).json(like);
+                    res.end();
+                })
+            }else{
+                res.status(401).json({user:'nothing'});
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
     async getAccount(req, res) {
         try {
             const effectId=req.params["account_id"];
