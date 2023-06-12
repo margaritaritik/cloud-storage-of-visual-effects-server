@@ -22,8 +22,10 @@ router.get('/getComments/:effect_id',authMiddleware, controller.getCommentsForEf
 router.get('/getAccount/:account_id',authMiddleware, controller.getAccount);
 router.post('/repository',authMiddleware, controller.repository);
 router.post('/like',authMiddleware, controller.likeRep);
+router.post('/favoriteDelete',authMiddleware, controller.likeRepDelete);
 router.get('/effects',authMiddleware, controller.getEffects);
-router.get('/likeRep',authMiddleware, controller.getLikeRep);
+router.get('/likeRep/:account_id',authMiddleware, controller.getLikeRep);
+
 router.delete('/effects',authMiddleware, controller.getEffects);
 
 

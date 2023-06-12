@@ -287,7 +287,7 @@ class authController {
         try {
             if(req.user){
                 db.query('select * from like_rep where id_account=? and id_rep=?;',[req.body.id_account,req.body.id_rep],function (err, results, fields) {
-                    if (results.length < 0) {
+                    if (results.length<= 0) {
                         db.query('insert into like_rep(id_account,id_rep) values(?,?);', [req.body.id_account, req.body.id_rep], function (err, results, fields) {
                             console.log("Сохранено!");
                         });
@@ -303,11 +303,34 @@ class authController {
             console.log(e);
         }
     }
-    async getLikeRep(req, res) {
-        let like=[];
+
+    async likeRepDelete(req, res) {
         try {
             if(req.user){
-                db.query('select * from like_rep where id_account=?;',[req.body.id_account],function (err, results, fields) {
+                db.query('select * from like_rep where id_account=? and id_rep=?;',[req.body.id_account,req.body.id_rep],function (err, results, fields) {
+                    if (results.length> 0) {
+                        db.query('delete from like_rep where id_account=? and id_rep=?;', [req.body.id_account, req.body.id_rep], function (err, results, fields) {
+                            console.log("Сохранено!");
+                        });
+                    }
+                    res.status(200).json({user:req.user});
+                    res.end();
+                })
+            }else{
+                res.status(401).json({user:'nothing'});
+            }
+
+        } catch (e) {
+            console.log(e);
+        }
+    }
+    async getLikeRep(req, res) {
+        let like=[];
+        const accountId=req.params["account_id"];
+        console.log(accountId);
+        try {
+            if(req.user){
+                db.query('select * from like_rep where id_account=?;',[accountId],function (err, results, fields) {
                     for (let i = 0; i < results.length; i++) {
                         like[i]=results[i].id_rep;
 
